@@ -82,6 +82,8 @@ class Home extends Component {
     data200:[],
     data201:[],
     data202:[],
+    yurtdısıgecenay:[],
+    gecenhaftayurtdısı:[],
     endunciftsatis:[],
     dunmagazatutar:[],
     dunmagazatutarlfl:[],
@@ -93,7 +95,10 @@ class Home extends Component {
     dunfranchisetutarlfl:[],
     dunmerkezfranchisetutar:[],
     dunmerkezfranchisetutarlfl:[],
-    tutarlargosterim: null,
+    yurtdısıtoplam:[],
+    yurtdısıToplamDeger:0,
+    tutarlargosterim2:0,
+    tutarlargosterim: 0,
     ciftgosterim: null,
     tekgosterim:null,
     Lflyurtdisi: 0,
@@ -167,9 +172,14 @@ class Home extends Component {
      data11: res11.data,
    }))
    await axios
-     .get('http://localhost:8080/api/engecenhaftatoplam/all')
+     .get('http://localhost:8080/api/getgecenhaftatoplam/all')
      .then(res4 => this.setState({
      data4: res4.data,
+   }))
+   await axios
+     .get('http://localhost:8080/api/getgecenhaftayurtdısıtoplam/all')
+     .then(res4 => this.setState({
+     gecenhaftayurtdısı: res4.data,
    }))
    await axios
      .get('http://localhost:8080/api/engecenhaftaciftsiralamasi/all')
@@ -187,11 +197,20 @@ class Home extends Component {
      .then(res90 => this.setState({
      data90: res90.data,
    }))
-
+   await axios
+     .get('http://localhost:8080/api/getgecenayyurtdısıtoplam/all')
+     .then(res90 => this.setState({
+     yurtdısıgecenay: res90.data,
+   }))
    await axios
      .get('http://localhost:8080/api/enduntoplam/all')
      .then(res103 => this.setState({
      data3: res103.data,
+   }))
+   await axios
+     .get('http://localhost:8080/api/endunyurtdısıtoplam/all')
+     .then(res103 => this.setState({
+     yurtdısıtoplam: res103.data,
    }))
    await axios
      .get('http://localhost:8080/api/enduntekadetsiralamasi/all')
@@ -220,13 +239,10 @@ class Home extends Component {
   _bugun = () => {
     this.setState({
       defaultmagaza: 1,
-      tutarlargosterim: this.state.data2.map((res2, Id) =>
-        res2.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")
-),
+
       ciftgosterim: this.state.data10.map((res5, Id) => res5.miktar),
       tekgosterim: this.state.data11.map((res6, Id) => res6.miktar),
-      tlcıkart: true,
-      // Magazalar
+
 
     })
 
@@ -235,9 +251,7 @@ class Home extends Component {
   _dun = () => {
     this.setState({
       defaultmagaza: 2,
-      tutarlargosterim: this.state.data3.map((res10, Id) =>
-        res10.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-      ),
+
       ciftgosterim: this.state.data30.map((res5, Id) => res5.miktar),
       tekgosterim: this.state.data31.map((res6, Id) => res6.miktar),
 
@@ -247,9 +261,7 @@ class Home extends Component {
   _gecenHafta = () => {
     this.setState({
       defaultmagaza: 3,
-      tutarlargosterim: this.state.data4.map((res4, Id) =>
-        res4.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-      ),
+
       ciftgosterim: this.state.data32.map((res5, Id) => res5.miktar),
       tekgosterim: this.state.data33.map((res6, Id) => res6.miktar),
 
@@ -259,9 +271,7 @@ class Home extends Component {
   _gecenAy = () => {
     this.setState({
       defaultmagaza: 4,
-      tutarlargosterim: this.state.data90.map((res4, Id) =>
-        res4.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."),
-      ),
+
       ciftgosterim: this.state.data92.map((res5, Id) => res5.miktar),
       tekgosterim: this.state.data91.map((res6, Id) => res6.miktar),
 
@@ -403,10 +413,27 @@ const PriceCaption = styled.Text`
     <View style={styles.summerItem}>
         <Text style={styles.summerKey}>CIRO</Text>
           <Text style={styles.ortaText}>
-            {this.state.tutarlargosterim}
             {
-              this.state.tlcıkart === true ? 'TL' : ''
-            }
+              this.state.defaultmagaza === 2 ?
+                this.state.data3.map((res10, Id) =>
+                  this.state.yurtdısıtoplam.map((res11, Id) =>
+                    <Text>{(res10.tutar + res11.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                )) :
+                this.state.defaultmagaza === 1 ?
+                  this.state.data2.map((res12, Id) =>
+                    <Text>{res12.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                ) :
+                this.state.defaultmagaza === 3 ?
+                  this.state.data4.map((res13, Id) =>
+                    this.state.gecenhaftayurtdısı.map((res14, Id) =>
+                     <Text>{(res13.tutar + res14.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                )) :
+                this.state.defaultmagaza === 4 ?
+                    this.state.data90.map((res14, Id) =>
+                    this.state.yurtdısıgecenay.map((res15, Id) =>
+                      <Text>{(res14.tutar + res15.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                )) : ''
+             }
         </Text>
     </View>
     </Animated.View>
@@ -503,7 +530,7 @@ const PriceCaption = styled.Text`
                  }}>
 
                  <Text style={styles.titleStyle}>{res200.m_f}</Text>
-                 <Text style={styles.titleStyle22}>{res200.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                 <Text style={styles.titleStyle2233}>{ (1.38 * res200.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                  <Text style={styles.textlfl}>
                  {res200.tutar < res104.tutar ?
                    <Text style={styles.kirmiziText}> % {Math.abs(100 * (res104.tutar - res200.tutar) / res104.tutar ).toFixed(2)}</Text>
@@ -595,7 +622,7 @@ const PriceCaption = styled.Text`
                  })
                }}>
                <Text style={styles.titleStyle}>{res103.m_f}</Text>
-               <Text style={styles.titleStyle22}>{res103.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+               <Text style={styles.titleStyle22}>{ (1.38 * res103.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                <Text style={styles.textlfl}>
                {res103.tutar < res104.tutar ?
                  <Text style={styles.kirmiziText}> % {Math.abs(100 * (res104.tutar - res103.tutar) / res104.tutar ).toFixed(2)}</Text>
@@ -682,7 +709,7 @@ const PriceCaption = styled.Text`
                  })
                }}>
                <Text style={styles.titleStyle}>{res201.m_f}</Text>
-               <Text style={styles.titleStyle22}>{res201.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+               <Text style={styles.titleStyle22}>{ (1.38 * res201.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                <Text style={styles.textlfl}>
                {res201.tutar < res104.tutar ?
                  <Text style={styles.kirmiziText}> % {Math.abs(100 * (res104.tutar - res201.tutar) / res104.tutar ).toFixed(2)}</Text>
@@ -768,7 +795,7 @@ const PriceCaption = styled.Text`
                  })
                }}>
                <Text style={styles.titleStyle}>{res202.m_f}</Text>
-               <Text style={styles.titleStyle22}>{res202.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+               <Text style={styles.titleStyle22}>{ (1.38 * res202.tutar).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                <Text style={styles.textlfl}>
                {res202.tutar < res104.tutar ?
                  <Text style={styles.kirmiziText}> % {Math.abs(100 * (res104.tutar - res202.tutar) / res104.tutar ).toFixed(2)}</Text>
@@ -800,7 +827,7 @@ const PriceCaption = styled.Text`
                  })
                }}>
                <Text style={styles.titleStyle}>{res202.m_f}</Text>
-               <Text style={styles.titleStyle22}>{res202.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+               <Text style={styles.titleStyle224}>{res202.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                <Text style={styles.textlfl23}>
                 {res202.tutar < res104.tutar ?
                   <Text style={styles.textlfl23}> % {Math.abs(100 * (res104.tutar - res202.tutar) / res104.tutar ).toFixed(2)}</Text>
@@ -841,8 +868,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     //flexDirection: 'row',
   },
+titleStyle2233:{
+  marginLeft:40,
+  marginRight:20,
+  fontSize: 15,
+  fontWeight: 'bold',
+  },
   titleStyle22:{
     marginLeft:20,
+    marginRight:20,
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  titleStyle224:{
+    marginLeft:10,
+    marginRight:10,
     fontSize: 15,
     fontWeight: 'bold',
   },
@@ -863,8 +903,8 @@ const styles = StyleSheet.create({
   },
   textlfl:{
     marginTop: 0,
-    marginRight:0,
-    marginLeft: 70,
+    marginRight:5,
+    marginLeft: 60,
     alignItems: 'flex-end',
     fontSize: 20,
     fontWeight: 'bold',
@@ -873,8 +913,8 @@ const styles = StyleSheet.create({
   textlfl22:{
     marginTop:0,
     padding:0,
-    marginLeft:10,
-    marginRight:0,
+    marginLeft:5,
+    marginRight:5,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#008000',
@@ -883,8 +923,8 @@ const styles = StyleSheet.create({
   },
   textlfl23:{
     marginTop:0,
-    marginLeft:10,
-    marginRight:0,
+    marginLeft:5,
+    marginRight:5,
     padding:0,
     fontSize: 16,
     fontWeight: 'bold',
@@ -1003,7 +1043,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffab91'
   },
   inputContainer:{
-    height:315,
+    height:330,
     marginTop: 0,
     //flexDirection: 'column',
   },

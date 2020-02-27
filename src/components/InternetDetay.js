@@ -17,17 +17,83 @@ class InternetDetay extends Component{
 
   state = {
     data39:[],
+    data40:[],
+    data41:[],
+    data42:[],
+    data43:[],
+    data44:[],
     counter: 0,
+    defaultmagaza:1,
   }
     async componentDidMount() {
       await axios
         .get('http://localhost:8080/api/getbugunkuinternetsiralamasi/all')
       .then(res39 => this.setState({
         data39: res39.data,
-        counter: this.state.counter + 1,
+        counter: this.state.counter,
+      }))
+      await axios
+        .get('http://localhost:8080/api/getbuguninternetsiralamasi/all')
+      .then(res39 => this.setState({
+        data40: res39.data,
+        counter: 0,
+      }))
+      await axios
+        .get('http://localhost:8080/api/getbuguninternetcifttekoran/all')
+      .then(res39 => this.setState({
+        data41: res39.data,
+        counter: 0,
+      }))
+      await axios
+        .get('http://localhost:8080/api/getduninternetsiralamasi/all')
+      .then(res39 => this.setState({
+        data42: res39.data,
+        counter: 0,
+      }))
+      await axios
+        .get('http://localhost:8080/api/getgecenhaftainternetsiralamasioran/all')
+      .then(res39 => this.setState({
+        data43: res39.data,
+        counter: 0,
+      }))
+      await axios
+        .get('http://localhost:8080/api/getgecenayinternetsiralamasioran/all')
+      .then(res39 => this.setState({
+        data44: res39.data,
+        counter: 0,
       }))
     }
 
+    _bugun = () => {
+      this.setState({
+        defaultmagaza: 1,
+        counter: 0,
+      })
+
+    }
+
+    _dun = () => {
+      this.setState({
+        defaultmagaza: 2,
+        counter: 0,
+      })
+
+    }
+
+    _gecenHafta = () => {
+      this.setState({
+        defaultmagaza: 3,
+        counter: 0,
+      })
+    }
+
+    _gecenAy = () => {
+      this.setState({
+        defaultmagaza: 4,
+        counter: 0,
+      })
+
+    }
 
   render(){
     const Container = styled.View`
@@ -135,10 +201,15 @@ class InternetDetay extends Component{
           <FlipCard>
           <View style={styles.card}>
             <Text style={styles.summerKey}>
-            AB
+            <Text>Internet toplam</Text>
             </Text>
             <Text style={styles.ortaText}>
-            %49
+            {
+              this.state.data40.map((res10, Id) =>
+
+                <Text>{res10.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+              )
+            }
             </Text>
             </View>
             <View style={styles.card}>
@@ -154,10 +225,15 @@ class InternetDetay extends Component{
             <FlipCard>
          <View style={styles.card}>
          <Text style={styles.summerKey}>
-         AB
+         <Text>Çift toplam</Text>
          </Text>
          <Text style={styles.ortaText}>
-         %49
+         {
+           this.state.data41.map((res10, Id) =>
+            res10.urun_olcu_birim === 'CF' ?
+            <Text>{res10.miktar}</Text> : <Text></Text>
+           )
+         }
          </Text>
          </View>
         <View style={styles.card}>
@@ -175,10 +251,15 @@ class InternetDetay extends Component{
         <FlipCard>
         <View style={styles.card}>
           <Text style={styles.summerKey}>
-          AB
+          <Text>tek toplam</Text>
           </Text>
           <Text style={styles.ortaText}>
-          %49
+          {
+            this.state.data41.map((res10, Id) =>
+             res10.urun_olcu_birim === 'AD' ?
+             <Text>{res10.miktar}</Text> : <Text></Text>
+            )
+          }
           </Text>
           </View>
           <View style={styles.card}>
@@ -214,14 +295,42 @@ class InternetDetay extends Component{
 
               <ScrollView style={styles.inputContainer}>
               {
-                this.state.data39.map((res, Id) =>
+                this.state.defaultmagaza === 1 ?
+                  this.state.data39.map((res, Id) =>
                     <Card1>
 
-                    <Text style={styles.titleStyle}>{this.state.counter++}</Text>
+                    <Text style={styles.titleStyle}>{this.state.counter = this.state.counter + 1}</Text>
                     <Text style={styles.titleStyle}>{res.unvan}</Text>
                     <Text style={styles.titleStyle}>{res.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
                     </Card1>
-                  )
+                  ) :
+                  this.state.defaultmagaza === 2 ?
+                    this.state.data42.map((res1, Id) =>
+                      <Card1>
+
+                      <Text style={styles.titleStyle}>{this.state.counter = this.state.counter + 1}</Text>
+                      <Text style={styles.titleStyle}>{res1.unvan}</Text>
+                      <Text style={styles.titleStyle}>{res1.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                      </Card1>
+                    ) :
+                    this.state.defaultmagaza === 3 ?
+                      this.state.data43.map((res, Id) =>
+                        <Card1>
+
+                        <Text style={styles.titleStyle}>{this.state.counter = this.state.counter + 1}</Text>
+                        <Text style={styles.titleStyle}>{res.unvan}</Text>
+                        <Text style={styles.titleStyle}>{res.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                        </Card1>
+                      ) :
+                      this.state.defaultmagaza === 4 ?
+                        this.state.data44.map((res, Id) =>
+                          <Card1>
+
+                          <Text style={styles.titleStyle}>{this.state.counter = this.state.counter + 1}</Text>
+                          <Text style={styles.titleStyle}>{res.unvan}</Text>
+                          <Text style={styles.titleStyle}>{res.tutar.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}TL</Text>
+                          </Card1>
+                        ) : <Text></Text>
               }
               </ScrollView>
             </View>

@@ -167,11 +167,6 @@ class Home extends Component {
      data10: res10.data,
    }))
    await axios
-     .get('http://localhost:8080/api/entumanliktektadetsiralamasi/all')
-     .then(res11 => this.setState({
-     data11: res11.data,
-   }))
-   await axios
      .get('http://localhost:8080/api/getgecenhaftatoplam/all')
      .then(res4 => this.setState({
      data4: res4.data,
@@ -186,12 +181,6 @@ class Home extends Component {
      .then(res32 => this.setState({
      data32: res32.data,
    }))
-   await axios
-     .get('http://localhost:8080/api/engecenhaftateksiralamasi/all')
-     .then(res33 => this.setState({
-     data33: res33.data,
-   }))
-
    await axios
      .get('http://localhost:8080/api/getgecenaytoplamciro/all')
      .then(res90 => this.setState({
@@ -213,22 +202,10 @@ class Home extends Component {
      yurtdısıtoplam: res103.data,
    }))
    await axios
-     .get('http://localhost:8080/api/enduntekadetsiralamasi/all')
-     .then(res103 => this.setState({
-     data31: res103.data,
-   }))
-
-   await axios
      .get('http://localhost:8080/api/getgecenaytoplamCIFT/all')
      .then(res103 => this.setState({
      data92: res103.data,
    }))
-   await axios
-     .get('http://localhost:8080/api/getgecenaytoplamADET/all')
-     .then(res103 => this.setState({
-     data91: res103.data,
-   }))
-
    await axios
      .get('http://localhost:8080/api/getdunciftsatis/all')
    .then(res39 => this.setState({
@@ -239,42 +216,23 @@ class Home extends Component {
   _bugun = () => {
     this.setState({
       defaultmagaza: 1,
-
-      ciftgosterim: this.state.data10.map((res5, Id) => res5.miktar),
-      tekgosterim: this.state.data11.map((res6, Id) => res6.miktar),
-
-
     })
-
-       console.log("bugune basıldı");
 }
   _dun = () => {
     this.setState({
       defaultmagaza: 2,
-
-      ciftgosterim: this.state.data30.map((res5, Id) => res5.miktar),
-      tekgosterim: this.state.data31.map((res6, Id) => res6.miktar),
-
     })
 
   }
   _gecenHafta = () => {
     this.setState({
       defaultmagaza: 3,
-
-      ciftgosterim: this.state.data32.map((res5, Id) => res5.miktar),
-      tekgosterim: this.state.data33.map((res6, Id) => res6.miktar),
-
     })
   }
 
   _gecenAy = () => {
     this.setState({
       defaultmagaza: 4,
-
-      ciftgosterim: this.state.data92.map((res5, Id) => res5.miktar),
-      tekgosterim: this.state.data91.map((res6, Id) => res6.miktar),
-
     })
 
   }
@@ -443,7 +401,28 @@ const PriceCaption = styled.Text`
       <View style={styles.summerItem}>
       <Text style={styles.summerKey}>CİFT</Text>
       <Text style={styles.ortaText}>
-        {this.state.ciftgosterim}
+        {
+          this.state.defaultmagaza === 1 ?
+            this.state.data10.map((res10, Id) =>
+              res10.urun_olcu_birim === 'CF' ?
+                <Text>{res10.miktar}</Text> : ''
+          ) :
+          this.state.defaultmagaza === 2 ?
+            this.state.data30.map((res10, Id) =>
+              res10.urun_olcu_birim === 'CF' ?
+                <Text>{res10.miktar}</Text> : ''
+          ) :
+          this.state.defaultmagaza === 3 ?
+            this.state.data32.map((res10, Id) =>
+              res10.birim === 'CF' ?
+                <Text>{res10.miktar}</Text> : ''
+          ) :
+          this.state.defaultmagaza === 4 ?
+            this.state.data92.map((res10, Id) =>
+              res10.birim === 'CF' ?
+                <Text>{res10.miktar}</Text> : ''
+          ) : <Text></Text>
+        }
       </Text>
     </View>
     </Animated.View>
@@ -456,7 +435,28 @@ const PriceCaption = styled.Text`
   <View style={styles.summerItem}>
       <Text style={styles.summerKey}>ADET</Text>
       <Text style={styles.ortaText}>
-      {this.state.tekgosterim}
+      {
+        this.state.defaultmagaza === 1 ?
+          this.state.data10.map((res10, Id) =>
+            res10.urun_olcu_birim === 'AD' ?
+              <Text>{res10.miktar}</Text> : ''
+        ) :
+        this.state.defaultmagaza === 2 ?
+          this.state.data30.map((res11, Id) =>
+            res11.urun_olcu_birim === 'AD' ?
+              <Text>{res11.miktar}</Text> : ''
+        ) :
+        this.state.defaultmagaza === 3 ?
+          this.state.data32.map((res11, Id) =>
+            res11.birim === 'AD' ?
+              <Text>{res11.miktar}</Text> : ''
+        ) :
+        this.state.defaultmagaza === 4 ?
+          this.state.data92.map((res11, Id) =>
+            res11.birim === 'AD' ?
+              <Text>{res11.miktar}</Text> : ''
+        ) : <Text></Text>
+      }
       </Text>
     </View>
     </Animated.View>
@@ -1064,7 +1064,7 @@ titleStyle2233:{
     backgroundColor:Colors.orange,
   },
   container: {
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#ffffff'
   },
   buttonyil: {
    flexDirection: 'row',
